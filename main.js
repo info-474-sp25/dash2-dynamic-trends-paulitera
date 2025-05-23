@@ -132,8 +132,7 @@ d3.csv("weather.csv").then(data => {
         .attr("x", width / 2)
         .attr("y", -20)
         .attr("text-anchor", "middle")
-        .attr("font-size", "16px")
-        .text("Record-Breaking Max Temperature Frequency");
+        .attr("font-size", "16px");
 
     svg2_RENAME.append("text")
         .attr("x", width / 2)
