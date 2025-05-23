@@ -21,8 +21,6 @@ Each row in the data represents one day of recorded observations.
 - Historical weather: [Weather Underground](https://www.wunderground.com/history)  
 - [Project Documentation](https://docs.google.com/document/d/15HiHTsKK8wbD6lOnJ1OmwlQJWHq4I1HsKmQBMVJanOc/edit?tab=t.0)
 
----
-
 ## 🌡️ Visualizations
 
 ### 1. Mean Temperature Trend Over Time
@@ -34,7 +32,6 @@ Each row in the data represents one day of recorded observations.
 📌 *Insight:*  
 Phoenix, AZ consistently shows the highest temperatures; Chicago, IL is coldest year-round. Winter peaks in Jacksonville, FL stand out.
 
----
 
 ### 2. Record-Breaking Temperature Frequency
 - **X-axis:** Year  
@@ -44,7 +41,7 @@ Phoenix, AZ consistently shows the highest temperatures; Chicago, IL is coldest 
 
 📌 *Insight:*  
 More record **high** temperatures than **low**, especially post-1940s, showing warming extremes and ongoing climate variability.
-
+<!-- 
 ---
 
 ### 3. Precipitation Distribution
@@ -54,23 +51,21 @@ More record **high** temperatures than **low**, especially post-1940s, showing w
 - **Type:** Histogram  
 
 📌 *Insight:*  
-Most cities experience low daily precipitation, with occasional high outliers. Grouped bin ranges show skewness in rainfall distribution.
+Most cities experience low daily precipitation, with occasional high outliers. Grouped bin ranges show skewness in rainfall distribution. -->
 
----
 
 ## 🔧 Interactive Features (Planned)
 - Dropdown for selecting individual cities  
 - Toggle switch to show/hide min/max record data  
-- Year range slider for zooming into time periods  
 
 ---
 
 ## 📁 Files
 - `index.html` — Webpage structure and header  
 - `main.js` — D3 loading, visualization logic  
-- `data/weather.csv` — Cleaned and uploaded dataset  
-- `styles.css` — Styling (if applicable)
----
+- `weather.csv` — Weather dataset  
+- `styles.css` — Styling  
+<!-- ---
 
 ## 🧠 Challenges & Solutions
 - **Challenge:** Overlapping city lines on the mean temperature chart  
@@ -78,14 +73,14 @@ Most cities experience low daily precipitation, with occasional high outliers. G
 - **Challenge:** Interpreting and visualizing record years as categorical data  
   **Solution:** Used a stacked histogram with toggles for min/max record control.  
 - **Challenge:** Cluttered visuals when all cities shown at once  
-  **Solution:** Prototyped cleaner interactions using Google Sheets to find balance.  
+  **Solution:** Prototyped cleaner interactions using Google Sheets to find balance.   -->
 
 ---
 
-## ✅ Contributions
-- **Paulina Teran** — Drafting initial charts, documentation writing  
-- **Tyrone Li** — Data loading, GitHub setup, dashboard structure  
----
+<!-- ## ✅ Contributions
+- **Paulina Teran**  
+- **Tyrone Li**  
+--- -->
 
 ## License
 This project is for academic use only. Data belongs to respective providers.

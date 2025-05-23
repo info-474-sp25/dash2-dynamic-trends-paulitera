@@ -105,26 +105,87 @@ d3.csv("weather.csv").then(data => {
         .call(d3.axisLeft(yTempScale));
 
     // 6.a: ADD LABELS FOR CHART 1
-    // title
+    // x
+    svg1_line.append("text")
+        .attr("class", "axis-label")
+        .attr("text-anchor", "middle")
+        .attr("x", width / 2)
+        .attr("y", height + (margin.bottom / 2) + 10)
+        .text("Date");
 
+    // y
+    svg1_line.append("text")
+        .attr("class", "axis-label")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -margin.left / 2)
+        .attr("x", -height / 2)
+        .text('Mean Temperature (' + String.fromCharCode(176) + 'F)');
 
     // 7.a: ADD INTERACTIVITY FOR CHART 1
+    // // Tooltip
+    const tooltip = d3.select("body") // Create tooltip
+        .append("div")
+        .attr("class", "tooltip")
+        .style("position", "absolute")
+        .style("visibility", "hidden")
+        .style("background", "rgba(0, 0, 0, 0.7)")
+        .style("color", "white")
+        .style("padding", "10px")
+        .style("border-radius", "5px")
+        .style("font-size", "12px");
 
+    svg1_line.selectAll(".data-point") // Create tooltip events
+        .data(lineDataArr1) // Bind data
+        // .data([selectedCategoryData]) // D7: Bind only to category selected by dropdown menu
+        .enter()
+        .append("circle")
+        .attr("class", "data-point")
+        .attr("cx", d => xDateScale(d.date))
+        .attr("cy", d => yTempScale(d.meanTemp))
+        .attr("r", 10)
+        .style("fill", "steelblue")
+        .style("opacity", 0)  // Make circles invisible by default
+        // --- MOUSEOVER ---
+        .on("mouseover", function (event, d) {
+            tooltip.style("visibility", "visible")
+                .html(`<strong>Date:</strong> ${formatDate(d.date)} <br><strong>Temperature:</strong> ${d.meanTemp}`)
+                .style("top", (event.pageY + 10) + "px") // Position relative to pointer
+                .style("left", (event.pageX + 10) + "px");
+
+            // Create the large circle at the hovered point
+            svg1_line.append("circle")
+                .attr("class", "hover-circle")
+                .attr("cx", xDateScale(d.date))  // Position based on the x scale (date)
+                .attr("cy", yTempScale(d.meanTemp)) // Position based on the y scale (mean temp)
+                .attr("r", 6)  // Radius of the large circle
+                .style("fill", "purple") // Circle color
+                .style("stroke-width", 2);
+        })
+        // --- MOUSEOUT ---
+        .on("mouseout", function () {
+            tooltip.style("visibility", "hidden");
+
+            // Remove the hover circle when mouseout occurs
+            svg1_line.selectAll(".hover-circle").remove();
+
+            // Make the circle invisible again
+            d3.select(this).style("opacity", 0);  // Reset opacity to 0 when not hovering
+        });
 
     // ==========================================
     //         CHART 2 (if applicable)
     // ==========================================
     const recordMaxCounts = d3.rollup(
-    data.filter(d => {
-    const y = +d.record_max_temp_year;
-    return !isNaN(y) && y >= 1850 && y <= 2025;
-    }),
-    v => v.length,
-    d => +d.record_max_temp_year
+        data.filter(d => {
+            const y = +d.record_max_temp_year;
+            return !isNaN(y) && y >= 1850 && y <= 2025;
+        }),
+        v => v.length,
+        d => +d.record_max_temp_year
     );
     const maxDataUnsorted = Array.from(recordMaxCounts, ([year, count]) => ({
-    year: +year,
-    count: +count
+        year: +year,
+        count: +count
     }));
 
     const maxData = maxDataUnsorted.sort((a, b) => a.year - b.year);
@@ -144,8 +205,8 @@ d3.csv("weather.csv").then(data => {
     const maxLine = d3.line()
         .x(d => x(d.year))
         .y(d => y(d.count));
-    
-     svg2_RENAME.append("path")
+
+    svg2_RENAME.append("path")
         .datum(maxData)
         .attr("fill", "none")
         .attr("stroke", "red")
@@ -170,12 +231,14 @@ d3.csv("weather.csv").then(data => {
         .attr("font-size", "16px");
 
     svg2_RENAME.append("text")
+        .attr("class", "axis-label")
         .attr("x", width / 2)
         .attr("y", height + 40)
         .attr("text-anchor", "middle")
         .text("Year");
 
     svg2_RENAME.append("text")
+        .attr("class", "axis-label")
         .attr("transform", "rotate(-90)")
         .attr("x", -height / 2)
         .attr("y", -50)
