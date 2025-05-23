@@ -1,7 +1,7 @@
 # 🌤️ Weather Dashboard — Group 3
 
 **Team Members:** Paulina Teran, Tyrone Li  
-**Course:** INFO 474
+**Course:** INFO 474  
 **Date:** May 2025  
 **Group:** 3  
 

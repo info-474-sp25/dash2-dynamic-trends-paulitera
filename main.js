@@ -24,7 +24,40 @@ const svg2_RENAME = d3.select("#lineChart2")
 // 2.a: LOAD...
 d3.csv("weather.csv").then(data => {
     // 2.b: ... AND TRANSFORM DATA
-    console.log(data)
+
+    // rename/reformat variables used for both visualizations
+    // TODO: add the variables for viz 2
+    data.forEach(d => {
+        d.date = d.date;
+        d.meanTemp = +d.actual_mean_temp;
+        d.city = d.city_full;
+    })
+
+    console.log("reformated data: ", data);
+
+    // ==========================================
+    //         CHART 1: Mean Temperature
+    // ==========================================
+
+    // filter data by removing nulls
+    const filteredData1 = data.filter(d =>
+        d.date != null
+        && d.meanTemp != null
+        && d.city === "Indianapolis, IN" // filtered just one city for now, but will add interactivity later
+    );
+
+    // GROUP and AGGREGATE data
+    const groupedData1 = d3.rollup(filteredData1,
+        v => d3.mean(v, d => d.meanTemp),
+        d => d.date
+    )
+
+    // turn data into array (no need to sort because it is already in order)
+    const lineDataArr1 = Array.from(groupedData1,
+        ([date, meanTemp]) => ({ date, meanTemp })
+    );
+
+    console.log("final data array (viz1): ", lineDataArr1);
 
     // 3.a: SET SCALES FOR CHART 1
 
