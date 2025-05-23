@@ -4,7 +4,7 @@ const width = 900 - margin.left - margin.right;
 const height = 400 - margin.top - margin.bottom;
 
 // Create SVG containers for both charts
-const svg1_RENAME = d3.select("#lineChart1") // If you change this ID, you must change it in index.html too
+const svg1_line = d3.select("#lineChart1") // If you change this ID, you must change it in index.html too
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -60,15 +60,50 @@ d3.csv("weather.csv").then(data => {
     console.log("final data array (viz1): ", lineDataArr1);
 
     // 3.a: SET SCALES FOR CHART 1
+    // x (parse date first)
+    const parseDate = d3.timeParse("%m/%d/%Y");
+    lineDataArr1.forEach(d => {
+        d.date = parseDate(d.date);
+    });
+    const xDateScale = d3.scaleTime()
+        .domain([lineDataArr1[0].date, lineDataArr1[lineDataArr1.length - 1].date])
+        .range([0, width]);
 
+    console.log("x scale: ", lineDataArr1[0].date, " to ", lineDataArr1[lineDataArr1.length - 1].date)
+
+    // y
+    const yTempScale = d3.scaleLinear()
+        .domain([0, 120])
+        .range([height, 0]);
 
     // 4.a: PLOT DATA FOR CHART 1
+    //create line
+    const line1 = d3.line()
+        .x(d => xDateScale(d.date))
+        .y(d => yTempScale(d.meanTemp));
 
+    // plot line
+    svg1_line.append("path")
+        .datum(lineDataArr1) // bind data with datum()
+        .attr("d", line1)
+        .attr("stroke", "purple")
+        .attr("stroke-width", 3)
+        .attr("fill", "none");
 
     // 5.a: ADD AXES FOR CHART 1
+    // x
+    const formatDate = d3.timeFormat("%m/%d/%Y");
+    svg1_line.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(xDateScale)
+            .tickFormat(formatDate));
 
+    // y
+    svg1_line.append("g")
+        .call(d3.axisLeft(yTempScale));
 
     // 6.a: ADD LABELS FOR CHART 1
+    // title
 
 
     // 7.a: ADD INTERACTIVITY FOR CHART 1
