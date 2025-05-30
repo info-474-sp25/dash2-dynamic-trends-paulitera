@@ -27,7 +27,6 @@ d3.csv("weather.csv").then(data => {
     // 2.b: ... AND TRANSFORM DATA
 
     // rename/reformat variables used for both visualizations
-    // TODO: add the variables for viz 2
     data.forEach(d => {
         d.date = d.date;
         d.record_max_temp_year = +d.record_max_temp_year;
@@ -45,19 +44,15 @@ d3.csv("weather.csv").then(data => {
     const filteredData1 = data.filter(d =>
         d.date != null
         && d.meanTemp != null
-        && d.city === "Indianapolis, IN" // filtered just one city for now, but will add interactivity later
+        && d.city != null // filtered just one city for now, but will add interactivity later
     );
+    //console.log("filtered data: ", filteredData1);
 
-    // GROUP and AGGREGATE data
-    const groupedData1 = d3.rollup(filteredData1,
-        v => d3.mean(v, d => d.meanTemp),
-        d => d.date
-    )
-
-    // turn data into array (no need to sort because it is already in order)
-    const lineDataArr1 = Array.from(groupedData1,
-        ([date, meanTemp]) => ({ date, meanTemp })
-    );
+    const lineDataArr1 = filteredData1.map(d => ({
+        date: d.date,
+        meanTemp: d.meanTemp,
+        city: d.city
+    }))
 
     console.log("final data array (viz1): ", lineDataArr1);
 
@@ -71,7 +66,7 @@ d3.csv("weather.csv").then(data => {
         .domain([lineDataArr1[0].date, lineDataArr1[lineDataArr1.length - 1].date])
         .range([0, width]);
 
-    console.log("x scale: ", lineDataArr1[0].date, " to ", lineDataArr1[lineDataArr1.length - 1].date)
+    //console.log("x scale: ", lineDataArr1[0].date, " to ", lineDataArr1[lineDataArr1.length - 1].date)
 
     // y
     const yTempScale = d3.scaleLinear()
@@ -84,16 +79,8 @@ d3.csv("weather.csv").then(data => {
         .x(d => xDateScale(d.date))
         .y(d => yTempScale(d.meanTemp));
 
-    // plot line
-    svg1_line.append("path")
-        .datum(lineDataArr1) // bind data with datum()
-        .attr("d", line1)
-        .attr("stroke", "purple")
-        .attr("stroke-width", 3)
-        .attr("fill", "none");
-
     // 5.a: ADD AXES FOR CHART 1
-    // x
+    // x (formatting date first)
     const formatDate = d3.timeFormat("%m/%d/%Y");
     svg1_line.append("g")
         .attr("transform", `translate(0,${height})`)
@@ -134,43 +121,73 @@ d3.csv("weather.csv").then(data => {
         .style("border-radius", "5px")
         .style("font-size", "12px");
 
-    svg1_line.selectAll(".data-point") // Create tooltip events
-        .data(lineDataArr1) // Bind data
-        // .data([selectedCategoryData]) // D7: Bind only to category selected by dropdown menu
-        .enter()
-        .append("circle")
-        .attr("class", "data-point")
-        .attr("cx", d => xDateScale(d.date))
-        .attr("cy", d => yTempScale(d.meanTemp))
-        .attr("r", 10)
-        .style("fill", "steelblue")
-        .style("opacity", 0)  // Make circles invisible by default
-        // --- MOUSEOVER ---
-        .on("mouseover", function (event, d) {
-            tooltip.style("visibility", "visible")
-                .html(`<strong>Date:</strong> ${formatDate(d.date)} <br><strong>Temperature:</strong> ${d.meanTemp}`)
-                .style("top", (event.pageY + 10) + "px") // Position relative to pointer
-                .style("left", (event.pageX + 10) + "px");
+    // Update chart for first time:
+    updateViz1("Indianapolis, IN");
 
-            // Create the large circle at the hovered point
-            svg1_line.append("circle")
-                .attr("class", "hover-circle")
-                .attr("cx", xDateScale(d.date))  // Position based on the x scale (date)
-                .attr("cy", yTempScale(d.meanTemp)) // Position based on the y scale (mean temp)
-                .attr("r", 6)  // Radius of the large circle
-                .style("fill", "purple") // Circle color
-                .style("stroke-width", 2);
-        })
-        // --- MOUSEOUT ---
-        .on("mouseout", function () {
-            tooltip.style("visibility", "hidden");
+    // Add category dropdown
+    function updateViz1(selectedCategory) {
+        const filteredData = lineDataArr1.filter(d => d.city === selectedCategory);
 
-            // Remove the hover circle when mouseout occurs
-            svg1_line.selectAll(".hover-circle").remove();
+        //remove existing line
+        svg1_line.selectAll("path.data-line").remove();
 
-            // Make the circle invisible again
-            d3.select(this).style("opacity", 0);  // Reset opacity to 0 when not hovering
-        });
+        // remove tooltip points
+        svg1_line.selectAll(".data-point").remove();
+
+        // redraw line
+        svg1_line.append("path")
+            .datum(filteredData) // bind data with datum()
+            .attr("class", "data-line")
+            .attr("d", line1)
+            .attr("stroke", "purple")
+            .attr("stroke-width", 3)
+            .attr("fill", "none");
+
+        // redraw tooltip points
+        svg1_line.selectAll(".data-point") // Create tooltip events
+            .data(filteredData) // Bind data
+            // .data([selectedCategoryData]) // D7: Bind only to category selected by dropdown menu
+            .enter()
+            .append("circle")
+            .attr("class", "data-point")
+            .attr("cx", d => xDateScale(d.date))
+            .attr("cy", d => yTempScale(d.meanTemp))
+            .attr("r", 10)
+            .style("fill", "steelblue")
+            .style("opacity", 0)  // Make circles invisible by default
+            // --- MOUSEOVER ---
+            .on("mouseover", function (event, d) {
+                tooltip.style("visibility", "visible")
+                    .html(`<strong>Date:</strong> ${formatDate(d.date)} <br><strong>Temperature:</strong> ${d.meanTemp}`)
+                    .style("top", (event.pageY + 10) + "px") // Position relative to pointer
+                    .style("left", (event.pageX + 10) + "px");
+
+                // Create the large circle at the hovered point
+                svg1_line.append("circle")
+                    .attr("class", "hover-circle")
+                    .attr("cx", xDateScale(d.date))  // Position based on the x scale (date)
+                    .attr("cy", yTempScale(d.meanTemp)) // Position based on the y scale (mean temp)
+                    .attr("r", 6)  // Radius of the large circle
+                    .style("fill", "purple") // Circle color
+                    .style("stroke-width", 2);
+            })
+            // --- MOUSEOUT ---
+            .on("mouseout", function () {
+                tooltip.style("visibility", "hidden");
+
+                // Remove the hover circle when mouseout occurs
+                svg1_line.selectAll(".hover-circle").remove();
+
+                // Make the circle invisible again
+                d3.select(this).style("opacity", 0);  // Reset opacity to 0 when not hovering
+            });
+    }
+
+    // Event Listeners
+    d3.select("#categorySelect").on("change", function () {
+        const selectedCategory = d3.select(this).property("value");
+        updateViz1(selectedCategory);
+    });
 
     // ==========================================
     //         CHART 2 (if applicable)
