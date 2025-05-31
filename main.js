@@ -192,77 +192,82 @@ d3.csv("weather.csv").then(data => {
     // ==========================================
     //         CHART 2 (if applicable)
     // ==========================================
-    const recordMaxCounts = d3.rollup(
-        data.filter(d => {
-            const y = +d.record_max_temp_year;
-            return !isNaN(y) && y >= 1850 && y <= 2025;
-        }),
-        v => v.length,
-        d => +d.record_max_temp_year
-    );
-    const maxDataUnsorted = Array.from(recordMaxCounts, ([year, count]) => ({
-        year: +year,
-        count: +count
-    }));
+    function getRecordData(recordType) {
+            const counts = d3.rollup(
+                data.filter(d => {
+                    const y = +d[`record_${recordType}_temp_year`];
+                    return !isNaN(y) && y >= 1850 && y <= 2025;
+                }),
+                v => v.length,
+                d => +d[`record_${recordType}_temp_year`]
+            );
 
-    const maxData = maxDataUnsorted.sort((a, b) => a.year - b.year);
+            return Array.from(counts, ([year, count]) => ({
+                year: +year,
+                count: +count
+            })).sort((a, b) => a.year - b.year);
+        }
 
-    // 3.b: SET SCALES FOR CHART 2
+        function drawRecordChart(recordType) {
+            const chartData = getRecordData(recordType);
 
-    const x = d3.scaleLinear()
-        .domain(d3.extent(maxData, d => d.year))
-        .range([0, width]);
+            svg2_RENAME.selectAll("*").remove(); // clear chart
 
-    const y = d3.scaleLinear()
-        .domain([0, d3.max(maxData, d => d.count)])
-        .range([height, 0]);
+            const x = d3.scaleLinear()
+                .domain(d3.extent(chartData, d => d.year))
+                .range([0, width]);
 
-    // 4.b: PLOT DATA FOR CHART 2
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(chartData, d => d.count)])
+                .range([height, 0]);
 
-    const maxLine = d3.line()
-        .x(d => x(d.year))
-        .y(d => y(d.count));
+            const maxLine = d3.line()
+                .x(d => x(d.year))
+                .y(d => y(d.count));
 
-    svg2_RENAME.append("path")
-        .datum(maxData)
-        .attr("fill", "none")
-        .attr("stroke", "red")
-        .attr("stroke-width", 2)
-        .attr("d", maxLine);
+            svg2_RENAME.append("path")
+                .datum(chartData)
+                .attr("fill", "none")
+                .attr("stroke", recordType === "max" ? "red" : "blue")
+                .attr("stroke-width", 2)
+                .attr("d", maxLine);
 
-    // 5.b: ADD AXES FOR CHART
+            svg2_RENAME.append("g")
+                .attr("transform", `translate(0, ${height})`)
+                .call(d3.axisBottom(x).tickFormat(d3.format("d")));
 
-    svg2_RENAME.append("g")
-        .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+            svg2_RENAME.append("g")
+                .call(d3.axisLeft(y));
 
-    svg2_RENAME.append("g")
-        .call(d3.axisLeft(y));
+            svg2_RENAME.append("text")
+                .attr("x", width / 2)
+                .attr("y", -20)
+                .attr("text-anchor", "middle")
+                .attr("font-size", "16px")
+                .text(`Record ${recordType === "max" ? "Max" : "Min"} Temperatures by Year`);
 
-    // 6.b: ADD LABELS FOR CHART 2
+            svg2_RENAME.append("text")
+                .attr("class", "axis-label")
+                .attr("x", width / 2)
+                .attr("y", height + 40)
+                .attr("text-anchor", "middle")
+                .text("Year");
 
-    svg2_RENAME.append("text")
-        .attr("x", width / 2)
-        .attr("y", -20)
-        .attr("text-anchor", "middle")
-        .attr("font-size", "16px");
+            svg2_RENAME.append("text")
+                .attr("class", "axis-label")
+                .attr("transform", "rotate(-90)")
+                .attr("x", -height / 2)
+                .attr("y", -50)
+                .attr("text-anchor", "middle")
+                .text("Count");
+        }
 
-    svg2_RENAME.append("text")
-        .attr("class", "axis-label")
-        .attr("x", width / 2)
-        .attr("y", height + 40)
-        .attr("text-anchor", "middle")
-        .text("Year");
+        // Initialize with record max chart
+        drawRecordChart("max");
 
-    svg2_RENAME.append("text")
-        .attr("class", "axis-label")
-        .attr("transform", "rotate(-90)")
-        .attr("x", -height / 2)
-        .attr("y", -50)
-        .attr("text-anchor", "middle")
-        .text("Count");
-
-    // 7.b: ADD INTERACTIVITY FOR CHART 2
-
-
-});
+        // Add event listener for dropdown
+        d3.select("#recordTypeSelect").on("change", function () {
+            const selected = d3.select(this).property("value");
+            drawRecordChart(selected);
+        });
+    });
