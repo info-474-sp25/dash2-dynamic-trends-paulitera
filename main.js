@@ -18,9 +18,6 @@ const svg2_RENAME = d3.select("#lineChart2")
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-// (If applicable) Tooltip element for interactivity
-// const tooltip = ...
-
 // 2.a: LOAD...
 d3.csv("weather.csv").then(data => {
     console.log("Raw CSV data:", data);
@@ -82,10 +79,11 @@ d3.csv("weather.csv").then(data => {
     // 5.a: ADD AXES FOR CHART 1
     // x (formatting date first)
     const formatDate = d3.timeFormat("%m/%d/%Y");
+    const formatDateShort = d3.timeFormat("%b %Y");
     svg1_line.append("g")
         .attr("transform", `translate(0,${height})`)
         .call(d3.axisBottom(xDateScale)
-            .tickFormat(formatDate));
+            .tickFormat(formatDateShort));
 
     // y
     svg1_line.append("g")

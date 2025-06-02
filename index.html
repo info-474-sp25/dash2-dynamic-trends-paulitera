@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,58 +8,62 @@
     <script src="https://d3js.org/d3.v7.min.js"></script> <!-- Load D3 library -->
     <link rel="stylesheet" href="style.css"> <!-- Connect to style.css for styles -->
 </head>
+
 <body class="vertical-container">
     <!-- HEADER -->
     <div class="item">
         <h1>Weather Analytics</h1>
         <p><strong>Authors:</strong> Paulina Teran, Tyrone Li</p>
-        <p><strong>Documentation:</strong> <a href="https://docs.google.com/document/d/1xvhKQ6KlxfsjpXW6960kbJ3zsT2mBKMFqcDaztLHpcU/edit?tab=t.42much453x6q#heading=h.rvpzg7mr3qlv" target="_blank">Google Doc Link</a></p>
+        <p><strong>Documentation:</strong> <a
+                href="https://docs.google.com/document/d/1xvhKQ6KlxfsjpXW6960kbJ3zsT2mBKMFqcDaztLHpcU/edit?tab=t.42much453x6q#heading=h.rvpzg7mr3qlv"
+                target="_blank">Google Doc Link</a></p>
     </div>
 
     <!-- INTERACTIVE WIDGETS -->
-    <div class="item horizontal-container">
-        <div class="item"><!-- Your widget 1 code goes here. -->
-            <!-- Widget 1 title -->
-            <label for="categorySelect">Select city:</label>
-            <!-- Widget 1 element -->
-            <div class="select-container">
-                <select id="categorySelect">
-                    <option value="Indianapolis, IN">Indianapolis, IN</option>
-                    <option value="Charlotte, NC">Charlotte, NC</option>
-                    <option value="Chicago (Midway), IL">Chicago (Midway), IL</option>
-                    <option value="Phoenix, AZ">Phoenix, AZ</option>
-                    <option value="Jacksonville, FL">Jacksonville, FL</option>
-                    <option value="Philadelphia, PA">Philadelphia, PA</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- DELETE THE FOLLOWING DIV IF YOU ONLY HAVE 1 WIDGET. -->
-        <div class="item"><!-- Your widget 2 code goes here. -->
-            <!-- Widget 2 title -->
-             <label for="recordTypeSelect">Select record type:</label>
-            <!-- Widget 2 element -->
-             <div class="select-container">
-        <select id="recordTypeSelect">
-            <option value="max">Record Max</option>
-            <option value="min">Record Min</option>
-        </select>
-    </div>
+    <div class="item"><!-- Your widget 1 code goes here. -->
+        <!-- Widget 1 title -->
+        <label for="categorySelect">Select city:</label>
+        <!-- Widget 1 element -->
+        <div class="select-container">
+            <select id="categorySelect">
+                <option value="Indianapolis, IN">Indianapolis, IN</option>
+                <option value="Charlotte, NC">Charlotte, NC</option>
+                <option value="Chicago (Midway), IL">Chicago (Midway), IL</option>
+                <option value="Phoenix, AZ">Phoenix, AZ</option>
+                <option value="Jacksonville, FL">Jacksonville, FL</option>
+                <option value="Philadelphia, PA">Philadelphia, PA</option>
+            </select>
         </div>
     </div>
 
-    <!-- CHART(S) -->
+    <!-- CHART1 -->
     <div class="item chart-container">
         <h2>Mean Temperature Over Time</h2>
-        <svg id="lineChart1" width="900" height="400"></svg> <!-- If you change this ID name, you must change it in main.js too -->
+        <svg id="lineChart1" width="900" height="400"></svg>
+        <!-- If you change this ID name, you must change it in main.js too -->
     </div>
-    <!-- DELETE THE FOLLOWING DIV IF YOU ONLY HAVE 1 CHART. -->
+
+    <!-- second widget -->
+    <div class="item"><!-- Your widget 2 code goes here. -->
+        <!-- Widget 2 title -->
+        <label for="recordTypeSelect">Select record type:</label>
+        <!-- Widget 2 element -->
+        <div class="select-container">
+            <select id="recordTypeSelect">
+                <option value="max">Record Max</option>
+                <option value="min">Record Min</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Chart 2 -->
     <div class="item chart-container">
         <h2>Record-Breaking Temperature Frequency</h2>
         <svg id="lineChart2" width="900" height="400"></svg>
     </div>
     <script src="main.js"></script>
 </body>
+
 </html>
 
 <!-- Starter code polished with assistance from DeepSeek. -->
