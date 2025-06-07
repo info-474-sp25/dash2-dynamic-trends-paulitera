@@ -227,7 +227,7 @@ d3.csv("weather.csv").then(data => {
                 .datum(chartData)
                 .attr("fill", "none")
                 .attr("stroke", recordType === "max" ? "red" : "blue")
-                .attr("stroke-width", 2)
+                .attr("stroke-width", 3)
                 .attr("d", maxLine);
 
             svg2_RENAME.append("g")
@@ -236,13 +236,6 @@ d3.csv("weather.csv").then(data => {
 
             svg2_RENAME.append("g")
                 .call(d3.axisLeft(y));
-
-            svg2_RENAME.append("text")
-                .attr("x", width / 2)
-                .attr("y", -20)
-                .attr("text-anchor", "middle")
-                .attr("font-size", "16px")
-                .text(`Record ${recordType === "max" ? "Max" : "Min"} Temperatures by Year`);
 
             svg2_RENAME.append("text")
                 .attr("class", "axis-label")
